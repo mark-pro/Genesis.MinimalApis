@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0;</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>6.1.0</Version>
+    <Authors>Mark Pro, StratusCube Contributors</Authors>
+    <Company>StratusCube</Company>
+    <Description>Allows for the the registration of minimal endpoints from either manual deffinition or by the use of AspNet.MVC route attributes.</Description>
+    <PackageIcon>nuget-icon.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageTags>RavenDB;Configuration;Extensions;StratusCube</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Copyright>StratusCube LLC.</Copyright>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.nuget.org/packages/Genesis.MinimalApis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mark-pro/Genesis.MinimalApis</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="./nuget-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="../LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>

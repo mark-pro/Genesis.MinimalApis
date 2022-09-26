@@ -1,0 +1,75 @@
+
+
+name: .NET
+
+on:
+  push:
+    branches: [ master, release/* ]
+  pull_request:
+    branches: [ master, release/* ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET 6.0
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.401
+    - name: Setup .NET 7.0
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 7.0.100-rc.1.22431.12
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore -c Release
+    - name: Test
+      run: dotnet test --logger trx --results-directory "TestResults"
+    - name: Upload dotnet test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: dotnet-results
+        path: TestResults
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()    # run this step even if previous step failed
+      with:
+        name: Test Results           # Name of the check run which will be created
+        path: TestResults/*.trx    # Path to test results
+        reporter: dotnet-trx       # Format of test results
+    - name: Pack
+      run: dotnet pack -c Release --no-build
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./**/bin/Release/*.nupkg
+        # The desired behavior if no files are found using the provided path.
+  publish:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    needs: [build]
+    steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.x.x
+    - name: Download nupkg
+      uses: actions/download-artifact@v3.0.0
+      with:
+        # Artifact name
+        path: ./artifacts
+    - name: publish
+      working-directory: ./artifacts
+      run: dotnet nuget push **/*.nupkg
+        --source https://api.nuget.org/v3/index.json
+        --skip-duplicate --no-symbols
+        -k ${NUGET_KEY}
+      env:
+        NUGET_KEY: ${{ secrets.NUGET_API_KEY }}

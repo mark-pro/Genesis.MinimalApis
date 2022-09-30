@@ -27,9 +27,8 @@ public static class WebApplicationExtensions {
         var sp = scope.ServiceProvider;
         var service = sp.GetService<T>()
             ?? throw new ApplicationException($"Cannot find registered service {typeof(T).FullName}");
-
-        if(typeof(T).GetInterface(nameof(IEndpoints)) != null)
-            (service as IEndpoints)?.RegisterEndpoints(app);
+        
+        (service as IEndpoints)?.RegisterEndpoints(app);
             
         return RegisterAttributes(app, service, typeof(T));
     }
@@ -46,7 +45,9 @@ public static class WebApplicationExtensions {
     /// </code>
     /// </summary>
     public static WebApplication MapStaticEndpoints(this WebApplication app, Type type) =>
-        RegisterAttributes(app, null, type);
+        type.IsAbstract && type.IsSealed
+            ? RegisterAttributes(app, null, type)
+            : throw new ArgumentException($"{type.Name} must be a static class!", nameof(type));
 
     static WebApplication RegisterAttributes(WebApplication app, object? instance, Type type) {
         Delegate CreateDelegate(object? instance, MethodInfo mi) {

@@ -13,7 +13,7 @@
     <Description>Allows for the the registration of minimal endpoints from either manual deffinition or by the use of AspNet.MVC route attributes.</Description>
     <PackageIcon>nuget-icon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageTags>RavenDB;Configuration;Extensions;StratusCube</PackageTags>
+    <PackageTags>AspNetCore;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;Genesis</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>StratusCube LLC.</Copyright>

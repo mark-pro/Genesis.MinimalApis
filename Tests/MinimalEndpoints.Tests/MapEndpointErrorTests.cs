@@ -6,7 +6,7 @@ using Test.Api;
 namespace MinimalEndpoints.Tests;
 
 [TestClass]
-public class MapEndpointErrorTests {
+public class MapEndpointErrorTests : IAsyncDisposable {
 
     WebApplication? _app;
 
@@ -24,4 +24,11 @@ public class MapEndpointErrorTests {
             .WithMessage($"{typeof(SampleEndpoints).Name} must be a static class! *")
             .WithParameterName("type");
     }
+
+    [TestCleanup]
+    public Task CleanupTest() =>
+        DisposeAsync().AsTask();
+
+    public ValueTask DisposeAsync() =>
+        _app?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

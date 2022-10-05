@@ -50,8 +50,9 @@ public sealed class MinimalEndpointsTests {
     [DynamicData(nameof(RegisterData))]
     public async Task EndpointRegisterTest(Register register) {
         await using var app = CreateSampleApp(register);
-        var client = app.CreateClient();
-        var response = await client.GetStringAsync("api/greet?name=sample");
+        var response = await app.CreateClient()
+            .GetStringAsync("api/greet?name=sample");
+
         response.Should().Be("Hello sample!");
     }
 
@@ -87,14 +88,14 @@ public sealed class MinimalEndpointsTests {
             .Should().Be("hello");
     }
 
-    public static IEnumerable<object[]> MapAttributeData() =>
+    static IEnumerable<object[]> MapAttributeData() =>
         Enum.GetValues<Register>()
             .SelectMany(r => 
                 Enum.GetValues<HttpVerb>()
                     .Select(v => new object[] { r, v })
             );
             
-    public static IEnumerable<object[]> RegisterData =>
+    static IEnumerable<object[]> RegisterData =>
         Enum.GetValues<Register>()
             .Except(new[] { Register.Static })
             .Select(r => new object[] { r });

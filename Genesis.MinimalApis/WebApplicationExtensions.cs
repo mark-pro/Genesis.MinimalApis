@@ -23,7 +23,7 @@ public static class WebApplicationExtensions {
     /// </summary>
     /// <typeparam name="T">Type registered in services that contains <see ref="HttpMethodAttribute" /> and <see ref="RouteAtribute" /> attributes.</typeparam>
     public static WebApplication MapEndpoints<T>(this WebApplication app) {
-        using var scope = app.Services.CreateScope();
+        var scope = app.Services.CreateScope();
         var sp = scope.ServiceProvider;
         var service = sp.GetService<T>()
             ?? throw new ApplicationException($"Cannot find registered service {typeof(T).FullName}");
@@ -99,13 +99,14 @@ public static class WebApplicationExtensions {
 
         foreach(var (action, routeTemplate, verb) in results)
             (verb switch {
-                "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>) EndpointRouteBuilderExtensions.MapDelete,
-                "GET" => EndpointRouteBuilderExtensions.MapGet,
+                "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>)
+                            EndpointRouteBuilderExtensions.MapDelete,
+                "GET"    => EndpointRouteBuilderExtensions.MapGet,
 #if NET7_0_OR_GREATER
-                "PATCH" => EndpointRouteBuilderExtensions.MapPatch,
+                "PATCH"  => EndpointRouteBuilderExtensions.MapPatch,
 #endif
-                "POST" => EndpointRouteBuilderExtensions.MapPost,
-                "PUT" => EndpointRouteBuilderExtensions.MapPut,
+                "POST"   => EndpointRouteBuilderExtensions.MapPost,
+                "PUT"    => EndpointRouteBuilderExtensions.MapPut,
                 _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())
             })(app, routeTemplate, action);
 

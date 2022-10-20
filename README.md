@@ -75,7 +75,7 @@ app.Run();
 
 ### Attribute Definition
 
-Endpoints can be exposed by using attributes found in `Microsoft.AspNetCore.Mvc` and `Microsoft.AspNetCore.Mvc.Routing.
+Endpoints can be exposed by using attributes found in `Microsoft.AspNetCore.Mvc` and `Microsoft.AspNetCore.Mvc.Routing`.
 
 Supported Attributes:
 - [`HttpGet`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.httpgetattribute?view=aspnetcore-6.0)
@@ -120,7 +120,7 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api")]
 internal static class GreetingFunctions {
     [HttpGet("greet/{name}")]
-    public string Greet(string name) =>
+    public static string Greet(string name) =>
         $"Hello {name}!";
 }
 

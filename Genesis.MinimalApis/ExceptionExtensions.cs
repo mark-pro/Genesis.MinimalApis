@@ -9,9 +9,10 @@ public static partial class ExceptionExtensions {
                         [aex?.ParamName ?? string.Empty] = new[] { aex?.Message ?? "Parameter could not be validated" }
                     }
                 ) {
-                    Title = "One or more validation errors have occurred",
+                    Title = "One or more validation errors have occurred.",
                     Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
-                    Status = StatusCodes.Status400BadRequest
+                    Status = StatusCodes.Status400BadRequest,
+                    Detail = aex?.Message
                 },
             System.ComponentModel.DataAnnotations.ValidationException ve =>
                 new ValidationProblemDetails(
@@ -21,10 +22,11 @@ public static partial class ExceptionExtensions {
                 ) {
                     Title = "One or more validation errors have occurred.",
                     Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
-                    Status = StatusCodes.Status400BadRequest
+                    Status = StatusCodes.Status400BadRequest,
+                    Detail = ve?.Message
                 },
             Exception e =>
-                new() {
+                new ProblemDetails() {
                     Title = "An unexpected error has occurred.",
                     Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
                     Detail = e.Message,

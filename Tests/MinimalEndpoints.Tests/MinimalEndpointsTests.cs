@@ -1,7 +1,6 @@
 namespace MinimalEndpoints.Tests;
 
 using Genesis.DependencyInjection;
-using FluentAssertions;
 using Test.Api;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;

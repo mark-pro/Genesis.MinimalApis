@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>6.2.0</Version>
+    <Version>6.3.0</Version>
     <Authors>Mark Pro, StratusCube Contributors</Authors>
     <Company>StratusCube</Company>
     <Description>Allows for the the registration of minimal endpoints from either manual deffinition or by the use of AspNet.MVC route attributes.</Description>
     <PackageIcon>nuget-icon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageTags>AspNetCore;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;Genesis</PackageTags>
+    <PackageTags>AspNetCore;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>StratusCube LLC.</Copyright>

@@ -15,11 +15,11 @@ public sealed class MinimalEndpointsTests {
     }
 
     public enum HttpVerb {
-        Get, Post, 
+        Get,
 #if NET7_0_OR_GREATER
         Patch, 
 #endif
-        Put, Delete
+         Post, Put, Delete
     }
 
     static Action<IServiceCollection> RegisterAction<T>(Register register, Func<IServiceProvider, object>? func = null) where T : class, IEndpoints =>

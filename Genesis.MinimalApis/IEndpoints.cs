@@ -1,7 +1,5 @@
 ﻿namespace Genesis.DependencyInjection;
 
-using Microsoft.AspNetCore.Routing;
-
 public interface IEndpoints {
     /// <summary>
     /// Mutates the IEndpointRouteBuilder to include

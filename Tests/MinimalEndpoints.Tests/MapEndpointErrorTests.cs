@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Genesis.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Test.Api;

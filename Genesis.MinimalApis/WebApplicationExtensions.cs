@@ -3,10 +3,7 @@ namespace Genesis.DependencyInjection;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 
 public static class WebApplicationExtensions {
 

@@ -1,7 +1,5 @@
 namespace Genesis.DependencyInjection;
 
-using Microsoft.Extensions.DependencyInjection;
-
 public static class ServiceExtensions {
     /// <summary>
     /// Allows for the register of structs that implement <see ref="IEndpoints" />.

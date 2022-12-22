@@ -1,6 +1,18 @@
 ﻿namespace Genesis;
 
 public static partial class ExceptionExtensions {
+
+    /// <summary>
+    /// Convert an exception to a <see cref="ProblemDetails"/> object
+    /// <code>
+    /// var e = new Exception("Message 1", new("Message 0"));
+    /// e.ToProblemDetails(1).Detail; // result is "Message 0"
+    /// e.ToProblemDetails().Detail; // result is "Message 1"
+    /// </code>
+    /// </summary>
+    /// <param name="exception">The exception to convert</param>
+    /// <param name="maxMessageDepth">Optional maximum inner exception depth to use as the <see cref="ProblemDetails.Detail"/> property</param>
+    /// <returns>A <see cref="ProblemDetails"/> with a <see cref="ProblemDetails.Detail"/> being <see cref="Exception.InnerException"/> message at the specified depth</returns>
     public static ProblemDetails ToProblemDetails(this Exception exception, ushort maxMessageDepth = 1) {
 
         for (ushort i = 0;

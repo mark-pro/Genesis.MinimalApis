@@ -17,8 +17,7 @@ public static partial class ExceptionExtensions {
 
         for (ushort i = 0;
             i < maxMessageDepth && exception.InnerException is not null;
-            i++, exception = exception.InnerException
-        );
+            i++, exception = exception.InnerException);
 
         return exception switch {
             ArgumentException aex =>

@@ -7,7 +7,8 @@
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {},
 		"ghcr.io/devcontainers/features/dotnet:1": {},
-		"ghcr.io/devcontainers/features/git:1": {}
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/github-cli": {}
 	},
 	"customizations": {
 		"vscode": {
@@ -18,7 +19,10 @@
 				"hbenl.vscode-test-explorer",
 				"formulahendry.dotnet-test-explorer",
 				"ms-vsliveshare.vsliveshare-pack"
-			]
+			],
+			"settings": {
+				"FSharp.showExplorerOnStartup": false
+			}
 		}
 	},
 	"postCreateCommand": "dotnet restore"

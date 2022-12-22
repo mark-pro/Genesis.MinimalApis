@@ -1,8 +1,14 @@
 ﻿namespace Genesis;
 
 public static partial class ExceptionExtensions {
-    public static ProblemDetails ToProblemDetails(this Exception exception) =>
-        exception switch {
+    public static ProblemDetails ToProblemDetails(this Exception exception, ushort maxMessageDepth = 1) {
+
+        for (ushort i = 0;
+            i < maxMessageDepth && exception.InnerException is not null;
+            i++, exception = exception.InnerException
+        );
+
+        return exception switch {
             ArgumentException aex =>
                 new ValidationProblemDetails(
                     new Dictionary<string, string[]> {
@@ -33,4 +39,5 @@ public static partial class ExceptionExtensions {
                     Status = StatusCodes.Status500InternalServerError
                 }
         };
+    }
 }

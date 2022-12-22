@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MinimalEndpoints.Tests;
 
@@ -41,5 +42,28 @@ public class ExceptionExtensionTests {
 #endif
         })((string s) => details.Title.Should().Be(s));
     }
+
+    [TestMethod]
+    [DynamicData(nameof(Depths), DynamicDataSourceType.Property)]
+    public void DepthTest(ushort depth) {
+
+        Exception exceptionGenerator(ushort depth) {
+            var e = new Exception("Exception message 0");
+            for (ushort i = 0; i < depth; i++)
+                e = new($"Exception message {i + 1}", e);
+
+            return e;
+        }
+
+        var count = (ushort)Depths.Length;
+
+        var pd = exceptionGenerator((ushort)count).ToProblemDetails(depth);
+        pd.Detail.Should().Be($"Exception message {count - depth}");
+    }
+
+    static object[][] Depths =>
+        Enumerable.Range(0, 5)
+        .Select(i => new object[] { (ushort) i })
+        .ToArray();
 }
 

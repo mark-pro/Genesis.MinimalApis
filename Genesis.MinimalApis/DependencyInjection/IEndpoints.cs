@@ -6,6 +6,6 @@ public interface IEndpoints {
     /// endpoints in the registered function.
     /// </summary>
     /// <param name="app">Essentially the 
-    /// <see ref="Microsoft.AspNetCore.Builder.WebApplication" /> to mutate</param>
+    /// <seealso ref="Microsoft.AspNetCore.Builder.WebApplication" /> to mutate</param>
     void RegisterEndpoints(IEndpointRouteBuilder app);
 }

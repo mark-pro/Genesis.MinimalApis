@@ -8,7 +8,20 @@
 		"ghcr.io/devcontainers/features/common-utils:2": {},
 		"ghcr.io/devcontainers/features/dotnet:1": {},
 		"ghcr.io/devcontainers/features/git:1": {}
-	}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.vscode-pull-request-github",
+				"rangav.vscode-thunder-client",
+				"ms-dotnettools.vscode-dotnet-pack",
+				"hbenl.vscode-test-explorer",
+				"formulahendry.dotnet-test-explorer",
+				"ms-vsliveshare.vsliveshare-pack"
+			]
+		}
+	},
+	"postCreateCommand": "dotnet restore"
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

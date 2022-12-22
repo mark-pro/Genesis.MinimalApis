@@ -58,7 +58,7 @@ public sealed class MinimalEndpointsTests {
     [TestMethod]
     [DynamicData(nameof(MapAttributeData), DynamicDataSourceType.Method)]
     public async Task EndpointAttributeMapTest(Register register, HttpVerb verb) {
-        await using var app = CreateSampleApp(register);
+        using var app = CreateSampleApp(register);
         var client = app.CreateClient();
         
         Func<string?, HttpContent?, Task<HttpResponseMessage>>? contentFunc = 
@@ -78,13 +78,15 @@ public sealed class MinimalEndpointsTests {
                 _ => _ => Task.FromResult(new HttpResponseMessage())
             };
 
-        var json = JsonContent.Create("hello");
+        var content = "hello";
+
+        var json = JsonContent.Create(content);
 
         var response = await (contentFunc?.Invoke("api/echo", json) 
-            ?? nonContentFunc.Invoke("api/echo?message=hello"));
+            ?? nonContentFunc.Invoke($"api/echo?message={content}"));
 
         (await response.Content.ReadAsStringAsync())
-            .Should().Be("hello");
+            .Should().Be(content);
     }
 
     static IEnumerable<object[]> MapAttributeData() =>

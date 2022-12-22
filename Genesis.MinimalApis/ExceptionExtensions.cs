@@ -3,7 +3,7 @@
 public static partial class ExceptionExtensions {
 
     /// <summary>
-    /// Convert an exception to a <see cref="ProblemDetails"/> object
+    /// Convert an exception to a <seealso cref="ProblemDetails"/> object
     /// <code>
     /// var e = new Exception("Message 1", new("Message 0"));
     /// e.ToProblemDetails(1).Detail; // result is "Message 0"

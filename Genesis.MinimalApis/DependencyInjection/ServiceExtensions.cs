@@ -2,7 +2,7 @@ namespace Genesis.DependencyInjection;
 
 public static class ServiceExtensions {
     /// <summary>
-    /// Allows for the register of structs that implement <see ref="IEndpoints" />.
+    /// Allows for the register of structs that implement <seealso cref="IEndpoints"/>.
     /// </summary>
     public static IServiceCollection RegisterEndpoints<T>(this IServiceCollection services, Func<IServiceProvider, object> func) where T : IEndpoints =>
         services.AddSingleton(typeof(T), func);

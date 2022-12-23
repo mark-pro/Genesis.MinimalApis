@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.MinimalApis", "Gene
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Api", "Tests\Test.Api\Test.Api.csproj", "{89EA5DE0-ED78-4752-B417-B9A959A04A92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.MinimalApis.FluentValidation", "Genesis.MinimalApis.FluentValidation\Genesis.MinimalApis.FluentValidation.csproj", "{8B67C98E-FCB7-4279-8E77-1DD1EC049133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B67C98E-FCB7-4279-8E77-1DD1EC049133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B67C98E-FCB7-4279-8E77-1DD1EC049133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B67C98E-FCB7-4279-8E77-1DD1EC049133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B67C98E-FCB7-4279-8E77-1DD1EC049133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5DC7A2D9-9B3F-470B-A104-AFE479A106FD} = {446D73C4-CAA8-48E2-9F12-B23D2FDF5CEF}

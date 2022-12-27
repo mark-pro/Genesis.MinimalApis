@@ -20,32 +20,32 @@ public static partial class ExceptionExtensions {
             i++, exception = exception.InnerException);
 
         return exception switch {
-            ArgumentException aex =>
+            ArgumentException e =>
                 new ValidationProblemDetails(
                     new Dictionary<string, string[]> {
-                        [aex?.ParamName ?? string.Empty] = new[] { aex?.Message ?? "Parameter could not be validated" }
+                        [e?.ParamName ?? string.Empty] = new[] { e?.Message ?? "Parameter could not be validated" }
                     }
                 ) {
                     Title = "One or more validation errors have occurred.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
+                    Type = "https://httpwg.org/specs/rfc9110.html#status.400",
                     Status = StatusCodes.Status400BadRequest,
-                    Detail = aex?.Message
+                    Detail = e?.Message
                 },
-            System.ComponentModel.DataAnnotations.ValidationException ve =>
+            System.ComponentModel.DataAnnotations.ValidationException e =>
                 new ValidationProblemDetails(
-                    ve.ValidationResult.MemberNames.ToDictionary(
-                        k => k, _ => new[] { ve.ValidationResult.ErrorMessage ?? "Parameter could not be validated." }
+                    e.ValidationResult.MemberNames.ToDictionary(
+                        k => k, _ => new[] { e.ValidationResult.ErrorMessage ?? "Parameter could not be validated." }
                     )
                 ) {
                     Title = "One or more validation errors have occurred.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
+                    Type = "https://httpwg.org/specs/rfc9110.html#status.400",
                     Status = StatusCodes.Status400BadRequest,
-                    Detail = ve?.Message
+                    Detail = e?.Message
                 },
             Exception e =>
                 new ProblemDetails() {
                     Title = "An unexpected error has occurred.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+                    Type = "https://httpwg.org/specs/rfc9110.html#status.500",
                     Detail = e.Message,
                     Status = StatusCodes.Status500InternalServerError
                 }

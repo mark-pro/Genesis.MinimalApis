@@ -16,6 +16,6 @@ public static class RouteHandlerBuilderExtensions {
         ) {
             Title = "Validation error has occurred.",
             Status = StatusCodes.Status400BadRequest,
-            Type = "https://httpwg.org/specs/rfc9110.html#status.400"
+            Type = GenesisStatusCodes.Default[StatusCodes.Status400BadRequest]
         };
 }

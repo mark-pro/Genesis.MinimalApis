@@ -22,11 +22,8 @@ public class ValidatableType<VT, T> where VT : ValidatableType<VT, T> {
         return type is not null;
     }
 
-    public static explicit operator T(ValidatableType<VT, T> type) =>
+    public static implicit operator T(ValidatableType<VT, T> type) =>
         type._value;
-    
-    public static explicit operator ValidatableType<VT, T>(T value) =>
-        new(value);
 
     public T GetValue() => _value;
 

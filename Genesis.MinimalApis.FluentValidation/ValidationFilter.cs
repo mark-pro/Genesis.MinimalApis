@@ -12,10 +12,10 @@ public sealed class ValidationFilter<T> : IEndpointFilter {
         if(argument is null) return Results.Problem(new() {
             Title = "Validation could not be performed.",
             Status = StatusCodes.Status403Forbidden,
-            Type = "https://httpwg.org/specs/rfc9110.html#status.403",
+            Type = GenesisStatusCodes.Default[StatusCodes.Status403Forbidden],
             Detail = $"Could not find validator for {typeof(T).Name}"
         });
-
+        var foo = GenesisStatusCodes.Status400badRequest;
         var validationResult = await _validator.ValidateAsync((T) argument);
 
         if(!validationResult.IsValid) 

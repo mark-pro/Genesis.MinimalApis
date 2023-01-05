@@ -2,13 +2,12 @@ namespace Genesis.Validation;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LanguageExt;
 
-public class ValidatableType<VT, T> where VT : ValidatableType<VT, T> {
+public class ValidatableType<VT, T> : NewType<VT, T> where VT : NewType<VT, T> {
 
-    readonly T _value;
 
-    protected ValidatableType(T value) =>
-        _value = value;
+    protected ValidatableType(T value) : base(value) {}
 
     public static bool TryParse(string value, out VT? type) {
         type = default;
@@ -23,35 +22,5 @@ public class ValidatableType<VT, T> where VT : ValidatableType<VT, T> {
     }
 
     public static implicit operator T(ValidatableType<VT, T> type) =>
-        type._value;
-
-    public T GetValue() => _value;
-
-    public static bool operator ==(ValidatableType<VT, T> lhs, ValidatableType<VT, T> rhs) =>
-        lhs.Equals(rhs);
-
-    public static bool operator != (ValidatableType<VT, T> lhs, ValidatableType<VT, T> rhs) =>
-        !lhs.Equals(rhs);
-
-    public override string ToString() =>
-        _value?.ToString() ?? "()";
-
-
-    public override int GetHashCode() =>
-        _value is null ? 0 : _value.GetHashCode();
-
-    public override bool Equals(object? obj) {
-        if (ReferenceEquals(this , obj))
-            return true;
-
-        if (obj is null) return false;
-
-        int? hc = obj switch {
-            T o => o.GetHashCode(),
-            VT o => o.GetHashCode(),
-            _ => null
-        };
-
-        return hc is not null && hc == GetHashCode();
-    }
+        type.Value;
 }

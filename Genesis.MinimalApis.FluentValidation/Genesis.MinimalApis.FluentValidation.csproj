@@ -9,13 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../Generators/Generators.csproj" 
-        OutputItemType="Analyzer"
-        ReferenceOutputAssembly="false"
-    />
+    <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>

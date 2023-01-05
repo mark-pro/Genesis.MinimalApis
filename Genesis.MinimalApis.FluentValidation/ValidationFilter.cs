@@ -15,7 +15,6 @@ public sealed class ValidationFilter<T> : IEndpointFilter {
             Type = GenesisStatusCodes.Default[StatusCodes.Status403Forbidden],
             Detail = $"Could not find validator for {typeof(T).Name}"
         });
-        var foo = GenesisStatusCodes.Status400badRequest;
         var validationResult = await _validator.ValidateAsync((T) argument);
 
         if(!validationResult.IsValid) 

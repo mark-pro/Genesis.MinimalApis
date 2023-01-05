@@ -7,14 +7,14 @@ using System.Reflection;
 using FluentAssertions;
 
 [TestClass]
-public class UnitTest1
+public class GenesisStatusCodesTest
 {
     [TestMethod]
-    public void TestMethod1() {
+    public void ConstainsAllCodesTest() {
         var fields = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
             .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-            .Select(fi => (int) fi.GetValue(null))
+            .Select(fi => (int) fi.GetValue(null)!)
             .Distinct();
 
         var codes = GenesisStatusCodes.Default;

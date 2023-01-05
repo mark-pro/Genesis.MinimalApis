@@ -1,10 +1,9 @@
-namespace ValidationTests;
+namespace Validation.Tests;
 
-using Genesis;
-using Genesis.Validation;
+
 using global::Microsoft.AspNetCore.Http;
 using System.Reflection;
-using FluentAssertions;
+
 
 [TestClass]
 public class GenesisStatusCodesTest
@@ -21,7 +20,9 @@ public class GenesisStatusCodesTest
 
         fields.Count().Should().Be(codes.Count);
 
-        foreach(var (code, type) in codes)
+        foreach(var (code, type) in codes) {
             type.Should().Be($"https://httpwg.org/specs/rfc9110.html#status.{code}");
+            fields.Should().Contain(code);
+        }
     }
 }

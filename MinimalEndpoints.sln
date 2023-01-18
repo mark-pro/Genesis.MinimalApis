@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.MinimalApis", "Gene
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Api", "Tests\Test.Api\Test.Api.csproj", "{89EA5DE0-ED78-4752-B417-B9A959A04A92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.MinimalApis.FluentValidation", "Genesis.MinimalApis.FluentValidation\Genesis.MinimalApis.FluentValidation.csproj", "{5F25FEFA-DC6B-4E88-AE66-8312AA4349B4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation.Tests", "Tests\Validation.Tests\Validation.Tests.csproj", "{470FE413-6C15-41AB-A150-BE40BD23E247}"
 EndProject
 Global
@@ -50,10 +48,6 @@ Global
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89EA5DE0-ED78-4752-B417-B9A959A04A92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F25FEFA-DC6B-4E88-AE66-8312AA4349B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F25FEFA-DC6B-4E88-AE66-8312AA4349B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F25FEFA-DC6B-4E88-AE66-8312AA4349B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F25FEFA-DC6B-4E88-AE66-8312AA4349B4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Release|Any CPU.ActiveCfg = Release|Any CPU

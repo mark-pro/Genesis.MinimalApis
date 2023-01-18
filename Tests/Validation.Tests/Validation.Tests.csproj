@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Genesis.MinimalApis.FluentValidation\Genesis.MinimalApis.FluentValidation.csproj" />
+    <ProjectReference Include="..\..\Genesis.MinimalApis\Genesis.MinimalApis.csproj" />
   </ItemGroup>
 
 </Project>

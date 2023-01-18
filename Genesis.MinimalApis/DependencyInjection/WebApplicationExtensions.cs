@@ -99,9 +99,7 @@ public static class WebApplicationExtensions {
                 "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>)
                             EndpointRouteBuilderExtensions.MapDelete,
                 "GET"    => EndpointRouteBuilderExtensions.MapGet,
-#if NET7_0_OR_GREATER
                 "PATCH"  => EndpointRouteBuilderExtensions.MapPatch,
-#endif
                 "POST"   => EndpointRouteBuilderExtensions.MapPost,
                 "PUT"    => EndpointRouteBuilderExtensions.MapPut,
                 _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())

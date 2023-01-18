@@ -4,6 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+/// Wrapper type which can be used for primitives and non-complex types to be used with
+/// FluentValidaion and accepted as an argument parameter in minimal api functions.
+/// </summary>
+/// <typeparam name="TO"></typeparam>
+/// <typeparam name="T"></typeparam>
 public class ValidatableType<TO, T> : NewType<TO, T> where TO : ValidatableType<TO, T> {
     
     public ValidatableType(T value) : base(value) {}

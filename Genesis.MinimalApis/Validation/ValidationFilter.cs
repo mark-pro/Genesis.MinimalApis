@@ -1,9 +1,17 @@
 ﻿namespace Genesis.Validation;
 
+/// <summary>
+/// Performs validation on a minimal endpoint arguments paired by type
+/// </summary>
+/// <typeparam name="T">The type which will be used for the internal <seealso cref="IValidator" /></typeparam>
 public sealed class ValidationFilter<T> : IEndpointFilter {
 
     readonly IValidator<T> _validator;
 
+    /// <summary>
+    /// Sets up the internal <seeals cref="IValidator" />
+    /// </summary>
+    /// <param name="validator">The <seeals cref="IValidator" /> to use to validate a given argument's type</param>
     public ValidationFilter(IValidator<T> validator) =>
         _validator = validator;
 

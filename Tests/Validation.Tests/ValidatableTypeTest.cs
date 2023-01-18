@@ -5,12 +5,27 @@ public class ValidatableTypeTest {
 
     record SampleObject(int Id, string Value);
 
+    class StringType : ValidatableType<StringType, string> {
+        public StringType(string value) : base(value) {}
+    }
+
+    class SampleObjectType : ValidatableType<SampleObjectType, SampleObject> {
+        public SampleObjectType(SampleObject value) : base(value) {}
+    }
+
+    class DateTimeType : ValidatableType<DateTimeType, DateTime> {
+        public DateTimeType(DateTime value) : base(value) {}
+    }
+
+    class IntType : ValidatableType<IntType, int> {
+        public IntType(int value) : base(value) {}
+    }
+
     static IEnumerable<object[]> Data => new object[][] {
-        new object[] { "Hello World!", typeof(string) },
-        new object[] { 10, typeof(int) },
-        new object[] { 10.0, typeof(double) },
-        new object[] { new SampleObject(10, "foo"), typeof(SampleObject) },
-        new object[] { DateTime.Now, typeof(DateTime) }
+        new object[] { "Hello World!", typeof(StringType) },
+        new object[] { 10, typeof(IntType) },
+        new object[] { new SampleObject(10, "foo"), typeof(SampleObjectType) },
+        new object[] { DateTime.Now, typeof(DateTimeType) }
     };
 
     [TestMethod]
@@ -20,18 +35,18 @@ public class ValidatableTypeTest {
             ?.MakeGenericMethod(type)
             ?.Invoke(null, new object[] { data });
 
-        var nr = ValidatableType<string>.TryParse(null!, out var nvt);
+        var nr = StringType.TryParse(null!, out var nvt);
         nr.Should().BeFalse();
         nvt!.Should().BeNull();
     }
 
-    static void GenericTryParseTest<T>(T data) {
-        var method = typeof(ValidatableType<T>).GetMethod(nameof(ValidatableType<T>.TryParse));
+    static void GenericTryParseTest<T>(T data, Type type) {
+        var method = type.GetMethod("TryParse");
         var args = new object[] { data!, null! };
         var nr = (bool) (method?.Invoke(null, args) ?? false);
-        var vt = (ValidatableType<T>) args[1];
+        var vt = (T) args[1];
         nr.Should().BeTrue();
-        ((T) vt!).Should().Be(data);
+        vt!.Should().Be(data);
     }
 
 }

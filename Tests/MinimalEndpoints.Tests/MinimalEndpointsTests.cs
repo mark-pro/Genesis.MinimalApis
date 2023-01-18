@@ -61,9 +61,7 @@ public sealed class MinimalEndpointsTests {
             verb switch {
                 HttpVerb.Post => client.PostAsync,
                 HttpVerb.Put => client.PutAsync,
-#if NET7_0_OR_GREATER
                 HttpVerb.Patch => client.PatchAsync,
-#endif
                 _ => null
             };
 

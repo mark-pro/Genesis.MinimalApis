@@ -2,6 +2,7 @@ namespace Genesis.DependencyInjection;
 
 using System.Linq.Expressions;
 using System.Reflection;
+using Genesis.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -63,15 +64,9 @@ public static class WebApplicationExtensions {
 
         string CreateRouteTemplate(string template1, string template2) {
             string ParseRoute (string template) =>
-#if NET7_0_OR_GREATER
                 template switch {
                     ['/',..] => template[1..],
                     _ => template };
-#elif NET6_0_OR_GREATER
-                template.StartsWith('/') 
-                    ? template[1..] 
-                    : template;
-#endif
             return $@"{ParseRoute(template1)}/{ParseRoute(template2)}";
         }
 
@@ -88,14 +83,15 @@ public static class WebApplicationExtensions {
                 GetCustomAttributes<HttpMethodAttribute>(mi)
                 .Select(a => (
                     action: CreateDelegate(instance, mi), 
-                    attribute: a, 
+                    httpMethod: a,
+                    filters: GetCustomAttributes<ValidateAttribute>(mi),
                     routeTemplate: CreateRouteTemplate(routeRoot, a!.Template!)
                 ))
-            ).SelectMany(r => r.attribute.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x)))
+            ).SelectMany(r => r.httpMethod.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x, r.filters)))
             .Where(r => r.verb is "DELETE" or "GET" or "PATCH" or "POST" or "PUT");
 
-        foreach(var (action, routeTemplate, verb) in results)
-            (verb switch {
+        foreach(var (action, routeTemplate, verb, filters) in results) {
+            var routeBuilder = (verb switch {
                 "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>)
                             EndpointRouteBuilderExtensions.MapDelete,
                 "GET"    => EndpointRouteBuilderExtensions.MapGet,
@@ -104,7 +100,13 @@ public static class WebApplicationExtensions {
                 "PUT"    => EndpointRouteBuilderExtensions.MapPut,
                 _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())
             })(app, routeTemplate, action);
-
+            
+            foreach(var filter in filters)
+                typeof(RouteHandlerBuilderExtensions)
+                    ?.GetMethod("AddValidationFilter", 1, new Type[] { typeof(RouteHandlerBuilder) })
+                    ?.MakeGenericMethod(filter.Type)
+                    ?.Invoke(null, new object[] { routeBuilder });
+        }
         return app;
     }
 }

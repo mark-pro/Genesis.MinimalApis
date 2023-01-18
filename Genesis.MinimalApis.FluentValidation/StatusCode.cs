@@ -18,15 +18,17 @@ public class GenesisStatusCodes : IEnumerable<StatusCode>, IReadOnlyDictionary<i
     readonly Dictionary<int, string> _statusCodes;
 
     public GenesisStatusCodes() {
-        var fields = typeof(StatusCodes)
+        var codes = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
             .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
 
         _statusCodes = 
-            fields.Select(fi => fi.GetValue(null))
+            codes.Select(fi => Optional(fi.GetValue(null)))
+            .Somes()
+            .Cast<int>()
             .Distinct()
-            .Select(v => ((int) v!, $"https://httpwg.org/specs/rfc9110.html#status.{v}"))
-            .ToDictionary(i => i.Item1, i => i.Item2);
+            .Select(v => (code: v, type: $"https://httpwg.org/specs/rfc9110.html#status.{v}"))
+            .ToDictionary(i => i.code, i => i.type);
     }
 
     public string this[int key] => _statusCodes[key];

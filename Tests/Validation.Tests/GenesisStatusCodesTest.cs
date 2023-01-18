@@ -1,6 +1,5 @@
 namespace Validation.Tests;
 
-
 using global::Microsoft.AspNetCore.Http;
 using System.Reflection;
 
@@ -9,7 +8,7 @@ using System.Reflection;
 public class GenesisStatusCodesTest
 {
     [TestMethod]
-    public void ConstainsAllCodesTest() {
+    public void ContainsAllCodesTest() {
         var fields = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
             .Where(fi => fi.IsLiteral && !fi.IsInitOnly)

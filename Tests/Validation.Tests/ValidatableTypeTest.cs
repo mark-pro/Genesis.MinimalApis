@@ -1,35 +1,37 @@
 namespace Validation.Tests;
 
-using static System.Text.Json.JsonSerializer;
-
 [TestClass]
 public class ValidatableTypeTest {
 
     record SampleObject(int Id, string Value);
 
-    const string STRING = "Hello world!";
-    const int INT = 10;
-    const double DOUBLE = 10.0;
-    static SampleObject OBJECT => new(10, "foo");
+    static IEnumerable<object[]> Data => new object[][] {
+        new object[] { "Hello World!", typeof(string) },
+        new object[] { 10, typeof(int) },
+        new object[] { 10.0, typeof(double) },
+        new object[] { new SampleObject(10, "foo"), typeof(SampleObject) },
+        new object[] { DateTime.Now, typeof(DateTime) }
+    };
 
     [TestMethod]
-    public void TryParseTest() {
-        var sr = ValidatableType<string>.TryParse(STRING, out var svt);
-        sr.Should().BeTrue();
-        ((string) svt!).Should().Be(STRING);
+    [DynamicData(nameof(Data))]
+    public void TryParseTest(object data, Type type) {
+        this.GetType().GetMethod(nameof(GenericTryParseTest))
+            ?.MakeGenericMethod(type)
+            ?.Invoke(null, new object[] { data });
 
-        var ir = ValidatableType<int>.TryParse($"{INT}", out var ivt);
-        ir.Should().BeTrue();
-        ((int) ivt!).Should().Be(INT);
+        var nr = ValidatableType<string>.TryParse(null!, out var nvt);
+        nr.Should().BeFalse();
+        nvt!.Should().BeNull();
+    }
 
-        var dr = ValidatableType<double>.TryParse($"{DOUBLE}", out var dvt);
-        dr.Should().BeTrue();
-        ((double) dvt!).Should().Be(DOUBLE);
-
-        var oJson = Serialize(OBJECT);
-        var or = ValidatableType<SampleObject>.TryParse(oJson, out var ovt);
-        or.Should().BeTrue();
-        ((SampleObject) ovt!).Should().Be(OBJECT);
+    static void GenericTryParseTest<T>(T data) {
+        var method = typeof(ValidatableType<T>).GetMethod(nameof(ValidatableType<T>.TryParse));
+        var args = new object[] { data!, null! };
+        var nr = (bool) (method?.Invoke(null, args) ?? false);
+        var vt = (ValidatableType<T>) args[1];
+        nr.Should().BeTrue();
+        ((T) vt!).Should().Be(data);
     }
 
 }

@@ -4,14 +4,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class ValidatableType<T> : NewType<ValidatableType<T>, T> {
+public class ValidatableType<TO, T> : NewType<TO, T> where TO : ValidatableType<TO, T> {
     
     public ValidatableType(T value) : base(value) {}
     
-    public static bool TryParse(string value, [MaybeNullWhen(false)] out ValidatableType<T> type) =>
+    public static bool TryParse(string value, [MaybeNullWhen(false)] out TO type) =>
         (type = 
             (typeof(T) == typeof(string) 
-            ? TryOption(() => Optional((ValidatableType<T>?) Activator.CreateInstance(typeof(ValidatableType<T>), value)))
+            ? TryOption(() => Optional(Activator.CreateInstance(typeof(TO), value) as TO))
             : TryOption(() => {
                 var jo = new JsonSerializerOptions() {
                     NumberHandling = JsonNumberHandling.AllowReadingFromString
@@ -22,6 +22,6 @@ public class ValidatableType<T> : NewType<ValidatableType<T>, T> {
             .IfNoneOrFail(() => default!)
         ) is not null;
 
-    public static implicit operator T(ValidatableType<T> type) =>
+    public static implicit operator T(ValidatableType<TO, T> type) =>
         type.Value;
 }

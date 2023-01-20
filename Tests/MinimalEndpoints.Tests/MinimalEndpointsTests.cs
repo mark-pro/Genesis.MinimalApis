@@ -14,7 +14,7 @@ public sealed class MinimalEndpointsTests {
     }
 
     public enum HttpVerb {
-        Get, Patch, Post,Put, Delete
+        Get, Patch, Post, Put, Delete
     }
 
     static Action<IServiceCollection> RegisterAction<T>(Register register, Func<IServiceProvider, object>? func = null) where T : class, IEndpoints =>

@@ -11,9 +11,9 @@ public sealed class ValidationFilter<T> : IEndpointFilter {
     readonly IValidator<T> _validator;
 
     /// <summary>
-    /// Sets up the internal <seeals cref="IValidator" />
+    /// Sets up the internal <seealso cref="IValidator" />
     /// </summary>
-    /// <param name="validator">The <seeals cref="IValidator" /> to use to validate a given argument's type</param>
+    /// <param name="validator">The <seealso cref="IValidator" /> to use to validate a given argument's type</param>
     public ValidationFilter(IValidator<T> validator) =>
         _validator = validator;
 

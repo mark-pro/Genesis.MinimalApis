@@ -1,6 +1,7 @@
 ﻿namespace Genesis.Validation;
 
 using System.Diagnostics;
+using Genesis.Http;
 
 /// <summary>
 /// Performs validation on a minimal endpoint arguments paired by type

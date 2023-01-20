@@ -1,5 +1,7 @@
 ﻿namespace Genesis;
 
+using Genesis.Http;
+
 public static partial class ExceptionExtensions {
 
     /// <summary>

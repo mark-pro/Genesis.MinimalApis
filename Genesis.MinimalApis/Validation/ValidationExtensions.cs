@@ -1,3 +1,4 @@
+using Genesis.Http;
 using Microsoft.AspNetCore.Builder;
 
 namespace Genesis.Validation;

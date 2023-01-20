@@ -2,7 +2,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Genesis;
+namespace Genesis.Http;
 
 public record HttpStatusCode(int Status, Uri Type) {
     public HttpStatusCode(int status, string type) : this(status, new Uri(type)) {}

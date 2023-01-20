@@ -18,7 +18,8 @@
 				"ms-dotnettools.vscode-dotnet-pack",
 				"hbenl.vscode-test-explorer",
 				"formulahendry.dotnet-test-explorer",
-				"ms-vsliveshare.vsliveshare-pack"
+				"ms-vsliveshare.vsliveshare-pack",
+				"k--kato.docomment"
 			],
 			"settings": {
 				"FSharp.showExplorerOnStartup": false

@@ -4,7 +4,7 @@ using Genesis.DependencyInjection;
 using Test.Api;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
-
+using System.Net;
 
 [TestClass]
 public sealed class MinimalEndpointsTests {
@@ -14,11 +14,7 @@ public sealed class MinimalEndpointsTests {
     }
 
     public enum HttpVerb {
-        Get,
-#if NET7_0_OR_GREATER
-        Patch, 
-#endif
-         Post, Put, Delete
+        Get, Patch, Post, Put, Delete
     }
 
     static Action<IServiceCollection> RegisterAction<T>(Register register, Func<IServiceProvider, object>? func = null) where T : class, IEndpoints =>
@@ -65,9 +61,7 @@ public sealed class MinimalEndpointsTests {
             verb switch {
                 HttpVerb.Post => client.PostAsync,
                 HttpVerb.Put => client.PutAsync,
-#if NET7_0_OR_GREATER
                 HttpVerb.Patch => client.PatchAsync,
-#endif
                 _ => null
             };
 
@@ -87,6 +81,20 @@ public sealed class MinimalEndpointsTests {
 
         (await response.Content.ReadAsStringAsync())
             .Should().Be(content);
+    }
+
+    [TestMethod]
+    [DataRow("validate")]
+    [DataRow("param")]
+    public async Task EndpointValidationAttributeTest(string endpoint) {
+        using var app = new SampleApp(sp => {});
+        var client = app.CreateClient();
+        var uri = $"api/validation/echo-{endpoint}";
+
+        var request1 = client.GetAsync(uri);
+        var request2 = client.GetAsync($"{uri}?message=hello");
+        (await request1).StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await request2).StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     static IEnumerable<object[]> MapAttributeData() =>

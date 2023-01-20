@@ -2,12 +2,26 @@ namespace Samples.MapAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Genesis.Validation;
+using FluentValidation;
 
 public enum ToDoState : byte {
     Open, Done
 }
 
 record ToDo(int Id, string Title, ToDoState State = ToDoState.Open);
+
+class Message : ValidatableType<Message, string> {
+    public Message(string message) : base(message) {}
+}
+
+class MessageValidator : AbstractValidator<Message> {
+    public MessageValidator() {
+        RuleFor(x => (string) x).NotNull().NotEmpty()
+        .Matches("^[a-zA-Z0-9]+$")
+        .WithName(nameof(Message));
+    }
+}
 
 [Route("api")]
 sealed class ToDoService {
@@ -28,8 +42,8 @@ sealed class ToDoService {
     public ToDo? GetToDo(int id) =>
         ToDos.FirstOrDefault(t => t.Id == id);
 
-    [HttpPut("todos")]
-    public ToDo AddToDo(string message) {
+    [HttpPut("todos/create")]
+    public ToDo AddToDo([Validate] Message message) {
         ToDo todo = new(ToDos.Count, message);
         ToDos.Add(todo);
         return todo;

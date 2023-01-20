@@ -1,13 +1,13 @@
-using LanguageExt.Common;
-
 namespace Genesis;
+
+using LanguageExt.Common;
 
 public static partial class Prelude {
 
-    static IResult Fail(Exception e) =>
+    internal static IResult Fail(Exception e) =>
         Results.Problem(e.ToProblemDetails());
 
-    static Func<Error, IResult> FailWithError =>
+    static Func<Error, IResult> Error =>
         compose(
             (Error e) => e.Exception
                 .IfNone(new Exception(e.Message))
@@ -34,11 +34,11 @@ public static partial class Prelude {
         option.Match(Ok<T>, NotFound);
 
     public static IResult ToResult<T>(this Fin<T> fin) =>
-        fin.Match(Ok<T>, FailWithError);
+        fin.Match(Ok<T>, Error);
 
     public static IResult ToResult<T>(this Eff<T> eff) =>
-        eff.Match(Ok<T>, FailWithError).Run()
-        .IfFail(FailWithError);
+        eff.Match(Ok<T>, Error).Run()
+        .IfFail(Error);
 
     public static IResult ToResult(this Try<Unit> @try) =>
         @try.Match(NoContent, Fail);
@@ -50,9 +50,9 @@ public static partial class Prelude {
         option.Match(NoContent, NotFound);
 
     public static IResult ToResult(this Fin<Unit> fin) =>
-        fin.Match(NoContent, FailWithError);
+        fin.Match(NoContent, Error);
 
     public static IResult ToResult(this Eff<Unit> eff) =>
-        eff.Match(NoContent, FailWithError).Run()
-        .IfFail(FailWithError);
+        eff.Match(NoContent, Error).Run()
+        .IfFail(Error);
 }

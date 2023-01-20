@@ -4,7 +4,7 @@ using Genesis.DependencyInjection;
 using Test.Api;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
-
+using System.Net;
 
 [TestClass]
 public sealed class MinimalEndpointsTests {
@@ -81,6 +81,20 @@ public sealed class MinimalEndpointsTests {
 
         (await response.Content.ReadAsStringAsync())
             .Should().Be(content);
+    }
+
+    [TestMethod]
+    [DataRow("validate")]
+    [DataRow("param")]
+    public async Task EndpointValidationAttributeTest(string endpoint) {
+        using var app = new SampleApp(sp => {});
+        var client = app.CreateClient();
+        var uri = $"api/validation/echo-{endpoint}";
+
+        var request1 = client.GetAsync(uri);
+        var request2 = client.GetAsync($"{uri}?message=hello");
+        (await request1).StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await request2).StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     static IEnumerable<object[]> MapAttributeData() =>

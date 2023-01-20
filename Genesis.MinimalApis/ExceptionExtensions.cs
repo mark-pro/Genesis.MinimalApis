@@ -14,7 +14,6 @@ public static partial class ExceptionExtensions {
     /// <param name="maxMessageDepth">Optional maximum inner exception depth to use as the <see cref="ProblemDetails.Detail"/> property</param>
     /// <returns>A <see cref="ProblemDetails"/> with a <see cref="ProblemDetails.Detail"/> being <see cref="Exception.InnerException"/> message at the specified depth</returns>
     public static ProblemDetails ToProblemDetails(this Exception exception, ushort maxMessageDepth = 1) {
-
         for (ushort i = 0;
             i < maxMessageDepth && exception.InnerException is not null;
             i++, exception = exception.InnerException);
@@ -27,10 +26,19 @@ public static partial class ExceptionExtensions {
                     }
                 ) {
                     Title = "One or more validation errors have occurred.",
-                    Type = "https://httpwg.org/specs/rfc9110.html#status.400",
+                    Type = HttpStatusCodes.Default[StatusCodes.Status400BadRequest],
                     Status = StatusCodes.Status400BadRequest,
                     Detail = e?.Message
                 },
+            ValidationException e => new ValidationProblemDetails(
+                e.Errors.GroupBy(o => o.PropertyName)
+                    .ToDictionary(k => k.Key, v => v.Select(o => o.ErrorMessage).ToArray())
+            ) {
+                Title = "One or more validation errors have occurred",
+                Type = HttpStatusCodes.Default[StatusCodes.Status400BadRequest],
+                Status = StatusCodes.Status400BadRequest,
+                Detail = e.Message
+            },
             System.ComponentModel.DataAnnotations.ValidationException e =>
                 new ValidationProblemDetails(
                     e.ValidationResult.MemberNames.ToDictionary(
@@ -38,16 +46,23 @@ public static partial class ExceptionExtensions {
                     )
                 ) {
                     Title = "One or more validation errors have occurred.",
-                    Type = "https://httpwg.org/specs/rfc9110.html#status.400",
+                    Type = HttpStatusCodes.Default[StatusCodes.Status400BadRequest],
                     Status = StatusCodes.Status400BadRequest,
-                    Detail = e?.Message
+                    Detail = e.Message
+                },
+            System.Diagnostics.UnreachableException e =>
+                new ProblemDetails() {
+                    Title = "An error occured that should not have been possible",
+                    Detail = e.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Type = HttpStatusCodes.Default[StatusCodes.Status500InternalServerError]
                 },
             Exception e =>
                 new ProblemDetails() {
                     Title = "An unexpected error has occurred.",
-                    Type = "https://httpwg.org/specs/rfc9110.html#status.500",
-                    Detail = e.Message,
-                    Status = StatusCodes.Status500InternalServerError
+                    Type = HttpStatusCodes.Default[StatusCodes.Status500InternalServerError],
+                    Status = StatusCodes.Status500InternalServerError,
+                    Detail = e.Message
                 }
         };
     }

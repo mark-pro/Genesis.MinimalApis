@@ -84,7 +84,12 @@ public static class WebApplicationExtensions {
                 .Select(a => (
                     action: CreateDelegate(instance, mi), 
                     httpMethod: a,
-                    filters: GetCustomAttributes<ValidateAttribute>(mi),
+                    filters: GetCustomAttributes<ValidateParamAttribute>(mi)
+                        .Concat(
+                            mi.GetParameters()
+                            .Where(p => p.GetCustomAttribute<ValidateAttribute>() is not null)
+                            .Select(p => new ValidateParamAttribute(p.ParameterType))
+                        ).DistinctBy(a => a.Type),
                     routeTemplate: CreateRouteTemplate(routeRoot, a!.Template!)
                 ))
             ).SelectMany(r => r.httpMethod.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x, r.filters)))
@@ -103,7 +108,7 @@ public static class WebApplicationExtensions {
             
             foreach(var filter in filters)
                 typeof(RouteHandlerBuilderExtensions)
-                    ?.GetMethod("AddValidationFilter", 1, new Type[] { typeof(RouteHandlerBuilder) })
+                    ?.GetMethod("AddValidationFilter", 1, new[] { typeof(RouteHandlerBuilder) })
                     ?.MakeGenericMethod(filter.Type)
                     ?.Invoke(null, new object[] { routeBuilder });
         }

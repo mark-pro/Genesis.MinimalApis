@@ -10,11 +10,11 @@ namespace Genesis.Validation;
 /// Note: The attribute will be ignored if an http method attribute is not provided.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-public class ValidateAttribute : Attribute {
-    
+public class ValidateParamAttribute : Attribute {
     public readonly Type Type;
-
-    public ValidateAttribute(Type type) =>
+    public ValidateParamAttribute(Type type) =>
         Type = type;
-
 }
+
+[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+public class ValidateAttribute : Attribute {}

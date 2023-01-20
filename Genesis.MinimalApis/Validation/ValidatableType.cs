@@ -13,7 +13,7 @@ using System.Text.Json.Serialization;
 public class ValidatableType<TO, T> : NewType<TO, T> where TO : ValidatableType<TO, T> {
     
     public ValidatableType(T value) : base(value) {}
-    
+
     public static bool TryParse(string value, [MaybeNullWhen(false)] out TO type) =>
         (type = 
             (typeof(T) == typeof(string) 
@@ -23,7 +23,7 @@ public class ValidatableType<TO, T> : NewType<TO, T> where TO : ValidatableType<
                     NumberHandling = JsonNumberHandling.AllowReadingFromString
                 };
                 return Optional(JsonSerializer.Deserialize<T>(value.AsSpan(), jo))
-                .Map(New);
+                       .Map(New);
             }))
             .IfNoneOrFail(() => default!)
         ) is not null;

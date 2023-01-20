@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Genesis.DependencyInjection;
+using Genesis.Validation;
 
 [Route("api")]
 public sealed class SampleEndpoints : IEndpoints {
@@ -40,4 +41,14 @@ public static class SampleStaticEndpoints {
     [HttpPut("echo/static")]
     public static string StaticEchoNonContent([FromBody] string message) =>
         message ?? "";
+}
+
+[Route("api/validation")]
+public static class ValidationStaticEndpoints {
+    [HttpGet("echo-param")]
+    [ValidateParam(typeof(EchoRequest))]
+    public static string StaticEchoParamContent([AsParameters] EchoRequest request) => request.Message;
+    
+    [HttpGet("echo-validate")]
+    public static string StaticEchoValidateContent([Validate, AsParameters] EchoRequest request) => request.Message;
 }

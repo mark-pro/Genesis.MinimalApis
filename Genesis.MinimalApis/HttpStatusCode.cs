@@ -4,20 +4,22 @@ using System.Reflection;
 
 namespace Genesis;
 
-public record StatusCode(int Status, Uri Type) {
-    public StatusCode(int status, string type) : this(status, new Uri(type)) {}
+public record HttpStatusCode(int Status, Uri Type) {
+    public HttpStatusCode(int status, string type) : this(status, new Uri(type)) {}
 
-    public static implicit operator int(StatusCode code) =>
+    public static implicit operator int(HttpStatusCode code) =>
         code.Status;
 }
 
-public class GenesisStatusCodes : IEnumerable<StatusCode>, IReadOnlyDictionary<int, string> {
+public class HttpStatusCodes : IEnumerable<HttpStatusCode>, IReadOnlyDictionary<int, string> {
 
-    public readonly static GenesisStatusCodes Default = new();
+    public readonly static HttpStatusCodes Default = new();
+    public readonly static IEnumerable<HttpStatusCode> StatusCodes =
+        ((IEnumerable<HttpStatusCode>) Default).Memo();
 
     readonly Dictionary<int, string> _statusCodes;
 
-    public GenesisStatusCodes() {
+    public HttpStatusCodes() {
         var codes = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
             .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
@@ -41,8 +43,8 @@ public class GenesisStatusCodes : IEnumerable<StatusCode>, IReadOnlyDictionary<i
 
     public bool ContainsKey(int key) => _statusCodes.ContainsKey(key);
 
-    public IEnumerator<StatusCode> GetEnumerator() =>
-        _statusCodes.Select(s => new StatusCode(s.Key, s.Value)).GetEnumerator();
+    public IEnumerator<HttpStatusCode> GetEnumerator() =>
+        _statusCodes.Select(s => new HttpStatusCode(s.Key, s.Value)).GetEnumerator();
 
     public bool TryGetValue(int key , [MaybeNullWhen(false)] out string value) =>
         _statusCodes.TryGetValue(key, out value);

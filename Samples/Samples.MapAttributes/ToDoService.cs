@@ -17,7 +17,9 @@ class Message : ValidatableType<Message, string> {
 
 class MessageValidator : AbstractValidator<Message> {
     public MessageValidator() {
-        RuleFor(x => (string) x).NotNull().NotEmpty().Matches("^[a-zA-Z]+$");
+        RuleFor(x => (string) x).NotNull().NotEmpty()
+        .Matches("^[a-zA-Z0-9]+$")
+        .WithName(nameof(Message));
     }
 }
 
@@ -41,8 +43,7 @@ sealed class ToDoService {
         ToDos.FirstOrDefault(t => t.Id == id);
 
     [HttpPut("todos/create")]
-    [Validate(typeof(Message))]
-    public ToDo AddToDo(Message message) {
+    public ToDo AddToDo([Validate] Message message) {
         ToDo todo = new(ToDos.Count, message);
         ToDos.Add(todo);
         return todo;

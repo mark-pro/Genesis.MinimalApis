@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>6.3.1</Version>
+    <Version>7.0.0</Version>
     <Authors>Mark Pro, StratusCube Contributors</Authors>
     <Company>StratusCube</Company>
     <Description>Allows for the the registration of minimal endpoints from either manual deffinition or by the use of AspNet.MVC route attributes.</Description>

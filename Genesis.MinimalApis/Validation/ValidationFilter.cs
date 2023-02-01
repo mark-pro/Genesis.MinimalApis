@@ -1,7 +1,6 @@
 ﻿namespace Genesis.Validation;
 
 using System.Diagnostics;
-using Genesis.Http;
 
 /// <summary>
 /// Performs validation on a minimal endpoint arguments paired by type
@@ -19,19 +18,18 @@ public sealed class ValidationFilter<T> : IEndpointFilter {
         _validator = validator;
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context , EndpointFilterDelegate next) {
-        Option<object> argument = context.Arguments.FirstOrDefault(t => t is not null && t.GetType() == typeof(T));
+        Option<object> argument = context.Arguments.Map(Optional)
+            .FirstOrDefault(t => 
+                t.Match(o => o.GetType() == typeof(T), false));
         
         return await argument
             .Bind(a => Try(() => (T) a).ToOption())
             .MatchAsync(
-                async a =>
-                    (await _validator.ValidateAsync(a)) is var vr && vr.IsValid
-                    ? await next(context) ??
-                    Results.Problem(
-                        new UnreachableException("Error progressing in validation filter")
-                            .ToProblemDetails()
-                    )
-                    : Results.Problem(vr.ToProblemDetails()),
+                a =>
+                    _validator.ValidateAsync(a)
+                    .MapAsync(async r => r.IsValid 
+                        ? await next(context) 
+                        : Results.Problem(r.ToProblemDetails())),
                 () => Results.Problem(new() {
                     Title = "Validation could not be performed.",
                     Status = StatusCodes.Status403Forbidden,

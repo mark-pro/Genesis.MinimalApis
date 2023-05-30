@@ -40,10 +40,8 @@ jobs:
         path: TestResults/*.trx    # Path to test results
         reporter: dotnet-trx       # Format of test results
     - name: Pack MinimalEndpoints
-      run: dotnet pack Genesis.MinimalApis/ -c Release --no-build
-    - name: Pack Genesis LanguageExt
-      run: dotnet pack Genesis.LanguageExt.AspNetCore/ -c Release --no-build
-    - name: Upload a Build Artifact
+      run: dotnet pack -c Release --no-build
+    - name: Pack Solution
       uses: actions/upload-artifact@v3.0.0
       with:
         # A file, directory or wildcard pattern that describes what to upload

@@ -14,7 +14,7 @@
     <Description>Converts monad types from LanguageExt to AspNet Core Result types</Description>
     <PackageIcon>nuget-icon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageTags>LanguageExt;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
+    <PackageTags>LanguageExt;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>StratusCube LLC.</Copyright>
@@ -23,6 +23,24 @@
     <PackageProjectUrl>https://www.nuget.org/packages/Genesis.MinimalApis</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mark-pro/Genesis.MinimalApis</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="./README.md">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="../nuget-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="../LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

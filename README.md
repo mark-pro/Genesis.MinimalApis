@@ -1,4 +1,4 @@
-# Minimal Endpoints Dependency Injection
+# Genesis Minimal Endpoints
 
 [![.NET](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/dotnet.yml/badge.svg)](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/dotnet.yml)
 [![CodeQL](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/codeql-analysis.yml)

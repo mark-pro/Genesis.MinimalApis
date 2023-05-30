@@ -32,7 +32,7 @@
       <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="./nuget-icon.png">
+    <None Include="../nuget-icon.png">
       <Pack>True</Pack>
       <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -29,7 +29,7 @@ public static partial class Core {
         option.Match(Success, NotFound);
 
     public static IResult ToResult<T>(this Fin<Option<T>> fin) =>
-        fin.Map(o => o.Match(Success, NotFound))
+        fin.Map(o => o.Map(Success).IfNone(NotFound))
         .IfFail(Error);
 
     public static IResult ToResult<T>(this Fin<T> fin) =>

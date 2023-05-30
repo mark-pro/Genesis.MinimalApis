@@ -56,8 +56,4 @@
     <PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Genesis.LanguageExt.AspNetCore\Genesis.LanguageExt.AspNetCore.csproj" />
-  </ItemGroup>
 </Project>

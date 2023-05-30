@@ -1,4 +1,3 @@
-using Genesis.Http;
 using Microsoft.AspNetCore.Builder;
 
 namespace Genesis.Validation;
@@ -17,7 +16,7 @@ public static class RouteHandlerBuilderExtensions {
     /// <summary>
     /// Converts a <seealso cref="ValidationResult" /> to a <seealso cref="ValidationProblemDetails" />
     /// </summary>
-    /// <param name="results"><seealso cref="ValidationResult" /> to conver.</param>
+    /// <param name="results"><seealso cref="ValidationResult" /> to convert.</param>
     /// <returns>Returns a <seealso cref="ValidationProblemDetails" /></returns>
     public static ValidationProblemDetails ToProblemDetails(this ValidationResult results) =>
         new(

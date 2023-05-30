@@ -19,14 +19,18 @@
 				"hbenl.vscode-test-explorer",
 				"formulahendry.dotnet-test-explorer",
 				"ms-vsliveshare.vsliveshare-pack",
-				"k--kato.docomment"
+				"k--kato.docomment",
+				"streetsidesoftware.code-spell-checker"
 			],
 			"settings": {
 				"FSharp.showExplorerOnStartup": false
 			}
 		}
 	},
-	"postCreateCommand": "dotnet restore"
+	"postCreateCommand": "dotnet restore",
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

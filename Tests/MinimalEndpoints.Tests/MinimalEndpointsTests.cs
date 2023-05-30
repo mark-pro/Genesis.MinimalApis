@@ -45,10 +45,9 @@ public sealed class MinimalEndpointsTests {
     [DynamicData(nameof(RegisterData))]
     public async Task EndpointRegisterTest(Register register) {
         await using var app = CreateSampleApp(register);
-        var response = await app.CreateClient()
-            .GetStringAsync("api/greet?name=sample");
-
-        response.Should().Be("Hello sample!");
+        await app.CreateClient()
+        .GetStringAsync("api/greet?name=sample")
+        .Map(r => r.Should().Be("Hello sample!"));
     }
 
     [TestMethod]
@@ -79,8 +78,8 @@ public sealed class MinimalEndpointsTests {
         var response = await (contentFunc?.Invoke("api/echo", json) 
             ?? nonContentFunc.Invoke($"api/echo?message={content}"));
 
-        (await response.Content.ReadAsStringAsync())
-            .Should().Be(content);
+        await response.Content.ReadAsStringAsync()
+        .Map(x => x.Should().Be(content));
     }
 
     [TestMethod]
@@ -93,8 +92,13 @@ public sealed class MinimalEndpointsTests {
 
         var request1 = client.GetAsync(uri);
         var request2 = client.GetAsync($"{uri}?message=hello");
-        (await request1).StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        (await request2).StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var shouldHaveCode = curry((HttpStatusCode expected, HttpResponseMessage actual) => 
+            actual.Should().HaveStatusCode(expected));
+
+        _ = (await request1, await request2)
+            .BiMap(shouldHaveCode(HttpStatusCode.BadRequest), 
+        shouldHaveCode(HttpStatusCode.OK));
     }
 
     static IEnumerable<object[]> MapAttributeData() =>

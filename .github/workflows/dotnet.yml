@@ -15,14 +15,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.401
     - name: Setup .NET 7.0
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 7.0.100
+        dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -43,8 +39,10 @@ jobs:
         name: Test Results           # Name of the check run which will be created
         path: TestResults/*.trx    # Path to test results
         reporter: dotnet-trx       # Format of test results
-    - name: Pack
-      run: dotnet pack -c Release --no-build
+    - name: Pack MinimalEndpoints
+      run: dotnet pack Genesis.MinimalApis/ -c Release --no-build
+    - name: Pack Genesis LanguageExt
+      run: dotnet pack Genesis.LanguageExt.AspNetCore/ -c Release --no-build
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.0.0
       with:
@@ -59,7 +57,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.x.x
+        dotnet-version: 7.0.x
     - name: Download nupkg
       uses: actions/download-artifact@v3.0.0
       with:

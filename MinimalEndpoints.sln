@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Api", "Tests\Test.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation.Tests", "Tests\Validation.Tests\Validation.Tests.csproj", "{470FE413-6C15-41AB-A150-BE40BD23E247}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.LanguageExt.AspNetCore", "Genesis.LanguageExt.AspNetCore\Genesis.LanguageExt.AspNetCore.csproj", "{C830A350-0905-4DB4-9CBA-41228D83EE5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{470FE413-6C15-41AB-A150-BE40BD23E247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C830A350-0905-4DB4-9CBA-41228D83EE5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C830A350-0905-4DB4-9CBA-41228D83EE5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C830A350-0905-4DB4-9CBA-41228D83EE5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C830A350-0905-4DB4-9CBA-41228D83EE5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5DC7A2D9-9B3F-470B-A104-AFE479A106FD} = {446D73C4-CAA8-48E2-9F12-B23D2FDF5CEF}

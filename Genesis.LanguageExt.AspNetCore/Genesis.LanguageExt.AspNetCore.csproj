@@ -1,19 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;</TargetFrameworks>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>7.1.0</Version>
+    <Version>7.0.0</Version>
     <Authors>Mark Pro, StratusCube Contributors</Authors>
     <Company>StratusCube</Company>
-    <Description>Allows for the the registration of minimal endpoints from either manual deffinition or by the use of AspNet.MVC route attributes.</Description>
+    <Description>Converts monad types from LanguageExt to AspNet Core Result types</Description>
     <PackageIcon>nuget-icon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageTags>AspNetCore;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
+    <PackageTags>LanguageExt;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>StratusCube LLC.</Copyright>
@@ -24,10 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DependencyInjection\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="../README.md">
+    <None Include="./README.md">
       <Pack>True</Pack>
       <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -49,11 +48,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DependencyInjection\" />
+    <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.4.0" />
-    <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
+    <ProjectReference Include="..\Genesis.MinimalApis\Genesis.MinimalApis.csproj" />
   </ItemGroup>
+
 </Project>

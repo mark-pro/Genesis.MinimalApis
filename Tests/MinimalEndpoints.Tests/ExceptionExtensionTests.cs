@@ -1,11 +1,9 @@
 ﻿
 using FluentAssertions.Primitives;
-using Genesis;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
 
 namespace MinimalEndpoints.Tests;
 
@@ -31,10 +29,11 @@ public class ExceptionExtensionTests {
         be(statusCode, details.Status);
         be(e.Message, details?.Detail);
 
-        (details switch {
-            ValidationProblemDetails => (Action<Func<string, AndConstraint<StringAssertions>>>)
+        ((e, details) switch {
+            (ValidationException, ValidationProblemDetails) => (Action<Func<string, AndConstraint<StringAssertions>>>)
                 (x => x("One or more validation errors have occurred.")),
-            ProblemDetails => x => x("An unexpected error has occurred."),
+            (ArgumentException, ValidationProblemDetails) => x => x("Invalid argument provided."),
+            (Exception, ProblemDetails) => x => x("An unexpected error has occurred."),
 #if NET7_0_OR_GREATER
             _ => throw new UnreachableException()
 #else
@@ -47,7 +46,7 @@ public class ExceptionExtensionTests {
     [DynamicData(nameof(Depths), DynamicDataSourceType.Property)]
     public void DepthTest(ushort depth) {
 
-        Exception exceptionGenerator(ushort depth) {
+        static Exception exceptionGenerator(ushort depth) {
             var e = new Exception("Exception message 0");
             for (ushort i = 0; i < depth; i++)
                 e = new($"Exception message {i + 1}", e);
@@ -57,7 +56,7 @@ public class ExceptionExtensionTests {
 
         var count = (ushort)Depths.Length;
 
-        var pd = exceptionGenerator((ushort)count).ToProblemDetails(depth);
+        var pd = exceptionGenerator(count).ToProblemDetails(maxMessageDepth: depth);
         pd.Detail.Should().Be($"Exception message {count - depth}");
     }
 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 public static class WebApplicationExtensions {
 
     /// <summary>
-    /// Maps endpoints from functions in a class using <see ref="HttpMethodAttribute" /> and <see ref="RouteAtribute" /> attributes.
+    /// Maps endpoints from functions in a class using <see ref="HttpMethodAttribute" /> and <see ref="RouteAttribute" /> attributes.
     /// <code>
     /// [Route("api")]
     /// public class Foo {

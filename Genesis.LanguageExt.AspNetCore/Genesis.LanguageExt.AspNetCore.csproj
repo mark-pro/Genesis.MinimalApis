@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6;net7</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>7.0.0</Version>
+    <Authors>Mark Pro, StratusCube Contributors</Authors>
+    <Company>StratusCube</Company>
+    <Description>Converts monad types from LanguageExt to AspNet Core Result types</Description>
+    <PackageIcon>nuget-icon.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageTags>LanguageExt;Dependency Injection;DependencyInjection;Minimal Api;Minimal Apis;MinimalApi;MinimalApis;Genesis</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Copyright>StratusCube LLC.</Copyright>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.nuget.org/packages/Genesis.MinimalApis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mark-pro/Genesis.MinimalApis</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
+  </ItemGroup>
+
+</Project>

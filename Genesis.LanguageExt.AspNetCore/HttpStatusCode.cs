@@ -2,7 +2,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Genesis.Http;
+namespace Genesis;
 
 public record HttpStatusCode(int Status, Uri Type) {
     public HttpStatusCode(int status, string type) : this(status, new Uri(type)) {}
@@ -14,23 +14,20 @@ public record HttpStatusCode(int Status, Uri Type) {
 public class HttpStatusCodes : IEnumerable<HttpStatusCode>, IReadOnlyDictionary<int, string> {
 
     public readonly static HttpStatusCodes Default = new();
-    public readonly static IEnumerable<HttpStatusCode> StatusCodes =
-        ((IEnumerable<HttpStatusCode>) Default).Memo();
+    public readonly static Seq<HttpStatusCode> StatusCodes =
+        ((IEnumerable<HttpStatusCode>) Default).ToSeq();
 
     readonly Dictionary<int, string> _statusCodes;
 
     public HttpStatusCodes() {
-        var codes = typeof(StatusCodes)
+        _statusCodes = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-            .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
-
-        _statusCodes = 
-            codes.Select(fi => Optional(fi.GetValue(null)))
+            .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+            .Select(fi => Optional(fi.GetValue(null)))
             .Somes()
             .Cast<int>()
             .Distinct()
-            .Select(v => (code: v, type: $"https://httpwg.org/specs/rfc9110.html#status.{v}"))
-            .ToDictionary(i => i.code, i => i.type);
+            .ToDictionary(v => v, v => $"https://httpwg.org/specs/rfc9110.html#status.{v}");
     }
 
     public string this[int key] => _statusCodes[key];

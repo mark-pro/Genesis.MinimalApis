@@ -1,11 +1,9 @@
 ﻿
 using FluentAssertions.Primitives;
-using Genesis;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
 
 namespace MinimalEndpoints.Tests;
 
@@ -48,7 +46,7 @@ public class ExceptionExtensionTests {
     [DynamicData(nameof(Depths), DynamicDataSourceType.Property)]
     public void DepthTest(ushort depth) {
 
-        Exception exceptionGenerator(ushort depth) {
+        static Exception exceptionGenerator(ushort depth) {
             var e = new Exception("Exception message 0");
             for (ushort i = 0; i < depth; i++)
                 e = new($"Exception message {i + 1}", e);

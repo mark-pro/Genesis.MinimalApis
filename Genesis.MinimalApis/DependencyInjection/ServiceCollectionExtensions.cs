@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions {
     /// Returns the service collection with the validator added.
     /// </returns>
     public static IServiceCollection AddValidator<TValidator>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where TValidator : class, IValidator =>
-        services.AddIValidator(typeof(TValidator), serviceLifetime);
+        AddIValidator(serviceLifetime)(services, typeof(TValidator));
 
     /// <summary>
     /// Adds all public validators from the assembly containing the type provided.
@@ -76,8 +76,7 @@ public static class ServiceCollectionExtensions {
         typeof(T).Assembly.GetTypes()
         .Filter(x => x.IsAssignableTo(typeof(IValidator)) && !x.IsAbstract &&
             filter.Map(f => Activator.CreateInstance(x) as IValidator is var v && f(v!)).IfNone(true))
-        .Fold(services, (services, validator) =>
-            services.AddIValidator(validator, serviceLifetime));
+        .Fold(services, AddIValidator(serviceLifetime));
 
     private static Option<Type> GetGenericType(Option<Type> type) =>
         type.Bind(t => Optional(t.GetGenericArguments().FirstOrDefault()));
@@ -85,13 +84,14 @@ public static class ServiceCollectionExtensions {
     private static Type CreateIValidator(Type type) => 
         typeof(IValidator<>).MakeGenericType(type);
 
-    private static IServiceCollection AddIValidator(this IServiceCollection services, Type type, ServiceLifetime serviceLifetime) =>
-        GetGenericType(type.BaseType)
-        .Map(CreateIValidator)
-        .Fold(services, (services, t) => {
-            services.Add(new (t, type, serviceLifetime));
-            return services;
-        });
+    private static Func<IServiceCollection, Type, IServiceCollection> AddIValidator(ServiceLifetime serviceLife) =>
+        (services, type) =>
+            GetGenericType(type.BaseType)
+            .Map(CreateIValidator)
+            .Fold(services, (services, t) => {
+                services.Add(new (t, type, serviceLife));
+                return services;
+            });
 
 #endregion
     

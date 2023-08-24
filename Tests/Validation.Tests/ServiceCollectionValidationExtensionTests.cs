@@ -89,7 +89,7 @@ public class ServiceCollectionValidationExtensionTests {
     private static bool ServiceDescriptorIs<TValidator>(ServiceDescriptor serviceDescriptor) where TValidator : class, IValidator =>
         serviceDescriptor.ServiceType.IsAssignableTo(typeof(IValidator)) && serviceDescriptor.ImplementationType == typeof(TValidator);
     
-    private static object[][] ServiceLifetimes => new object[][] {
+    private static object[][] ServiceLifetimes => new [] {
         new object[] { ServiceLifetime.Scoped },
         new object[] { ServiceLifetime.Singleton },
         new object[] { ServiceLifetime.Transient }

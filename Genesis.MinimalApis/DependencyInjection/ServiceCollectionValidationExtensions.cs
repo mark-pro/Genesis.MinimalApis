@@ -35,7 +35,7 @@ public static class ServiceCollectionValidationExtensions {
     /// Returns the service collection with the validators added.
     /// </returns>
     public static IServiceCollection AddValidatorsFromAssemblyContaining<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where T : class =>
-        AddValidatorsFromAssemblyContaining<T>(services, None, serviceLifetime);
+        AddValidatorsFromAssemblyContaining<T>(services, null, serviceLifetime);
 
     /// <summary>
     /// Adds all public validators from the assembly containing the type provided.
@@ -55,10 +55,10 @@ public static class ServiceCollectionValidationExtensions {
     /// <returns>
     /// Returns the service collection with the validators added.
     /// </returns>
-    public static IServiceCollection AddValidatorsFromAssemblyContaining<T>(this IServiceCollection services, Option<Func<IValidator, bool>> filter, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where T : class =>
+    public static IServiceCollection AddValidatorsFromAssemblyContaining<T>(this IServiceCollection services , Func<IValidator , bool>? filter , ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where T : class =>
         typeof(T).Assembly.GetTypes()
         .Filter(x => x.IsAssignableTo(typeof(IValidator)) && !x.IsAbstract &&
-            filter.Map(f => Activator.CreateInstance(x) as IValidator is var v && f(v!)).IfNone(true))
+            Optional(filter).Map(f => Activator.CreateInstance(x) as IValidator is var v && f(v!)).IfNone(true))
         .Fold(services, AddIValidator(serviceLifetime));
 
     private static Option<Type> GetGenericType(Option<Type> type) =>

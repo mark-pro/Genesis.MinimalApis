@@ -71,8 +71,8 @@ public static class ServiceCollectionValidationExtensions {
         (services, type) =>
             GetGenericType(type.BaseType)
             .Map(CreateIValidator)
-            .Fold(services, (services, t) => {
-                services.Add(new (t, type, serviceLife));
-                return services;
+            .Fold(services, (serviceCollection, t) => {
+                serviceCollection.Add(new (t, type, serviceLife));
+                return serviceCollection;
             });
 }

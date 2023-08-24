@@ -45,15 +45,15 @@ public sealed class MinimalEndpointsTests {
     [DynamicData(nameof(RegisterData))]
     public async Task EndpointRegisterTest(Register register) {
         await using var app = CreateSampleApp(register);
-        await app.CreateClient()
-        .GetStringAsync("api/greet?name=sample")
-        .Map(r => r.Should().Be("Hello sample!"));
+        _ = await app.CreateClient()
+            .GetStringAsync("api/greet?name=sample")
+            .Map(r => r.Should().Be("Hello sample!"));
     }
 
     [TestMethod]
     [DynamicData(nameof(MapAttributeData), DynamicDataSourceType.Method)]
     public async Task EndpointAttributeMapTest(Register register, HttpVerb verb) {
-        using var app = CreateSampleApp(register);
+        await using var app = CreateSampleApp(register);
         var client = app.CreateClient();
         
         Func<string?, HttpContent?, Task<HttpResponseMessage>>? contentFunc = 
@@ -78,15 +78,15 @@ public sealed class MinimalEndpointsTests {
         var response = await (contentFunc?.Invoke("api/echo", json) 
             ?? nonContentFunc.Invoke($"api/echo?message={content}"));
 
-        await response.Content.ReadAsStringAsync()
-        .Map(x => x.Should().Be(content));
+        _ = await response.Content.ReadAsStringAsync()
+            .Map(x => x.Should().Be(content));
     }
 
     [TestMethod]
     [DataRow("validate")]
     [DataRow("param")]
     public async Task EndpointValidationAttributeTest(string endpoint) {
-        using var app = new SampleApp(sp => {});
+        await using var app = new SampleApp(sp => {});
         var client = app.CreateClient();
         var uri = $"api/validation/echo-{endpoint}";
 
@@ -103,13 +103,13 @@ public sealed class MinimalEndpointsTests {
 
     static IEnumerable<object[]> MapAttributeData() =>
         Enum.GetValues<Register>()
-            .SelectMany(r => 
+            .SelectMany(register => 
                 Enum.GetValues<HttpVerb>()
-                    .Select(v => new object[] { r, v })
+                    .Select(httpVerb => new object[] { register, httpVerb })
             );
             
     static IEnumerable<object[]> RegisterData =>
         Enum.GetValues<Register>()
             .Except(new[] { Register.Static })
-            .Select(r => new object[] { r });
+            .Select(register => new object[] { register });
 }

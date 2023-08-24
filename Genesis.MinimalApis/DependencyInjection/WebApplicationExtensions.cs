@@ -2,7 +2,7 @@ namespace Genesis.DependencyInjection;
 
 using System.Linq.Expressions;
 using System.Reflection;
-using Genesis.Validation;
+using Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -50,19 +50,6 @@ public static class WebApplicationExtensions {
             : throw new ArgumentException($"{type.Name} must be a static class!", nameof(type));
 
     static WebApplication RegisterAttributes(WebApplication app, object? instance, Type type) {
-        Delegate CreateDelegate(object? inst, MethodInfo mi) {
-            var parameters = 
-                mi.GetParameters()
-                .Select(p => Expression.Parameter(p.ParameterType, p.Name))
-                .ToArray();
-
-            var exprInstance = inst is null ? null : Expression.Constant(inst);
-
-            var call = Expression.Call(exprInstance, mi, parameters.Cast<Expression>());
-            
-            var lambda = Expression.Lambda(call, parameters).Compile();
-            return mi.CreateDelegate(lambda.GetType(), inst);
-        }
 
         string CreateRouteTemplate(string template1, string template2) {
             string ParseRoute (string template) =>
@@ -120,5 +107,19 @@ public static class WebApplicationExtensions {
                     .Invoke(null, new object[] { routeBuilder });
         }
         return app;
+
+        Delegate CreateDelegate(object? inst, MethodInfo mi) {
+            var parameters = 
+                mi.GetParameters()
+                    .Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                    .ToArray();
+
+            var exprInstance = inst is null ? null : Expression.Constant(inst);
+
+            var call = Expression.Call(exprInstance, mi, parameters.Cast<Expression>());
+            
+            var lambda = Expression.Lambda(call, parameters).Compile();
+            return mi.CreateDelegate(lambda.GetType(), inst);
+        }
     }
 }

@@ -8,6 +8,12 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 public static class WebApplicationExtensions {
 
+    const string _DELETE = "DELETE";
+    const string _GET = "GET";
+    const string _PATCH = "PATCH";
+    const string _POST = "POST";
+    const string _PUT = "PUT";
+    
     delegate RouteHandlerBuilder HttpVerbFunctor(IEndpointRouteBuilder routeBuilder, string routeTemplate, Delegate action);
     
     /// <summary>
@@ -82,7 +88,7 @@ public static class WebApplicationExtensions {
                     routeTemplate: CreateRouteTemplate(routeRoot, a.Template!)
                 ))
             ).SelectMany(r => r.httpMethod.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x, r.filters)))
-            .Where(r => r.verb is "DELETE" or "GET" or "PATCH" or "POST" or "PUT");
+            .Where(r => r.verb is _DELETE or _GET or _PATCH or _POST or _PUT);
 
         foreach(var (action, routeTemplate, verb, filters) in results) {
             HttpVerbFunctor mapDelete = EndpointRouteBuilderExtensions.MapDelete;
@@ -92,11 +98,11 @@ public static class WebApplicationExtensions {
             HttpVerbFunctor mapPut = EndpointRouteBuilderExtensions.MapPut;
             
             var routeBuilder = (verb switch {
-                "DELETE" => mapDelete,
-                "GET"    => mapGet,
-                "PATCH"  => mapPatch,
-                "POST"   => mapPost,
-                "PUT"    => mapPut,
+                _DELETE => mapDelete,
+                _GET    => mapGet,
+                _PATCH  => mapPatch,
+                _POST   => mapPost,
+                _PUT    => mapPut,
                 _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())
             })(app, routeTemplate, action);
             

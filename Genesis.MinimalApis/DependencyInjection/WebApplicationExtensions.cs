@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 public static class WebApplicationExtensions {
 
+    delegate RouteHandlerBuilder HttpVerbFunctor(IEndpointRouteBuilder routeBuilder, string routeTemplate, Delegate action);
+    
     /// <summary>
     /// Maps endpoints from functions in a class using <see ref="HttpMethodAttribute" /> and <see ref="RouteAttribute" /> attributes.
     /// <code>
@@ -43,23 +45,23 @@ public static class WebApplicationExtensions {
     /// </code>
     /// </summary>
     public static WebApplication MapStaticEndpoints(this WebApplication app, Type type) =>
-        type.IsAbstract && type.IsSealed
+        type is { IsAbstract: true , IsSealed: true }
             ? RegisterAttributes(app, null, type)
             : throw new ArgumentException($"{type.Name} must be a static class!", nameof(type));
 
     static WebApplication RegisterAttributes(WebApplication app, object? instance, Type type) {
-        Delegate CreateDelegate(object? instance, MethodInfo mi) {
+        Delegate CreateDelegate(object? inst, MethodInfo mi) {
             var parameters = 
                 mi.GetParameters()
                 .Select(p => Expression.Parameter(p.ParameterType, p.Name))
                 .ToArray();
 
-            var exprInstance = instance is null ? null : Expression.Constant(instance);
+            var exprInstance = inst is null ? null : Expression.Constant(inst);
 
-            var call = Expression.Call(exprInstance, mi, parameters);
+            var call = Expression.Call(exprInstance, mi, parameters.Cast<Expression>());
             
             var lambda = Expression.Lambda(call, parameters).Compile();
-            return mi.CreateDelegate(lambda.GetType(), instance);
+            return mi.CreateDelegate(lambda.GetType(), inst);
         }
 
         string CreateRouteTemplate(string template1, string template2) {
@@ -89,28 +91,33 @@ public static class WebApplicationExtensions {
                             mi.GetParameters()
                             .Where(p => p.GetCustomAttribute<ValidateAttribute>() is not null)
                             .Select(p => new ValidateParamAttribute(p.ParameterType))
-                        ).DistinctBy(a => a.Type),
-                    routeTemplate: CreateRouteTemplate(routeRoot, a!.Template!)
+                        ).DistinctBy(attr => attr.Type),
+                    routeTemplate: CreateRouteTemplate(routeRoot, a.Template!)
                 ))
             ).SelectMany(r => r.httpMethod.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x, r.filters)))
             .Where(r => r.verb is "DELETE" or "GET" or "PATCH" or "POST" or "PUT");
 
         foreach(var (action, routeTemplate, verb, filters) in results) {
+            HttpVerbFunctor mapDelete = EndpointRouteBuilderExtensions.MapDelete;
+            HttpVerbFunctor mapGet = EndpointRouteBuilderExtensions.MapGet;
+            HttpVerbFunctor mapPatch = EndpointRouteBuilderExtensions.MapPatch;
+            HttpVerbFunctor mapPost = EndpointRouteBuilderExtensions.MapPost;
+            HttpVerbFunctor mapPut = EndpointRouteBuilderExtensions.MapPut;
+            
             var routeBuilder = (verb switch {
-                "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>)
-                            EndpointRouteBuilderExtensions.MapDelete,
-                "GET"    => EndpointRouteBuilderExtensions.MapGet,
-                "PATCH"  => EndpointRouteBuilderExtensions.MapPatch,
-                "POST"   => EndpointRouteBuilderExtensions.MapPost,
-                "PUT"    => EndpointRouteBuilderExtensions.MapPut,
+                "DELETE" => mapDelete,
+                "GET"    => mapGet,
+                "PATCH"  => mapPatch,
+                "POST"   => mapPost,
+                "PUT"    => mapPut,
                 _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())
             })(app, routeTemplate, action);
             
             foreach(var filter in filters)
                 typeof(RouteHandlerBuilderExtensions)
-                    ?.GetMethod("AddValidationFilter", 1, new[] { typeof(RouteHandlerBuilder) })
+                    .GetMethod("AddValidationFilter", 1, new[] { typeof(RouteHandlerBuilder) })
                     ?.MakeGenericMethod(filter.Type)
-                    ?.Invoke(null, new object[] { routeBuilder });
+                    .Invoke(null, new object[] { routeBuilder });
         }
         return app;
     }

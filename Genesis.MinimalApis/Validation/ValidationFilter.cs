@@ -18,24 +18,21 @@ public sealed class ValidationFilter<T> : IEndpointFilter {
         _validator = validator;
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context , EndpointFilterDelegate next) {
-        Option<object> argument = context.Arguments.Map(Optional)
-            .FirstOrDefault(t => 
-                t.Match(o => o.GetType() == typeof(T), false));
+        Option<object> argument = context.Arguments.Map(Optional).Somes()
+            .FirstOrDefault(t => t.GetType() == typeof(T));
         
         return await argument
             .Bind(a => Try(() => (T) a).ToOption())
-            .MatchAsync(
-                a =>
-                    _validator.ValidateAsync(a)
+            .MapAsync(a =>  
+                _validator.ValidateAsync(a)
                     .MapAsync(async r => r.IsValid 
                         ? await next(context) 
-                        : Results.Problem(r.ToProblemDetails())),
-                () => Results.Problem(new() {
-                    Title = "Validation could not be performed.",
-                    Status = StatusCodes.Status403Forbidden,
-                    Type = HttpStatusCodes.Default[StatusCodes.Status403Forbidden],
-                    Detail = $"Could not find validator for {typeof(T).Name}"
-                }
-            ));
+                        : r.ToProblemDetails().Apply(Results.Problem)))
+            .IfNone(() => Results.Problem(new() {
+                Title = "Validation could not be performed.",
+                Status = StatusCodes.Status403Forbidden,
+                Type = HttpStatusCodes.Default[StatusCodes.Status403Forbidden],
+                Detail = $"Could not find validator for {typeof(T).Name}"
+            }));
     }
 }

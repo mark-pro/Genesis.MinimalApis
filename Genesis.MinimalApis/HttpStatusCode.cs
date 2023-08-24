@@ -19,11 +19,11 @@ public class HttpStatusCodes : IEnumerable<HttpStatusCode>, IReadOnlyDictionary<
 
     readonly Dictionary<int, string> _statusCodes;
 
-    public HttpStatusCodes() {
+    private HttpStatusCodes() {
         _statusCodes = typeof(StatusCodes)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-            .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-            .Select(fi => Optional(fi.GetValue(null)))
+            .Where(fieldInfo => fieldInfo is { IsLiteral: true , IsInitOnly: false })
+            .Select(fieldInfo => Optional(fieldInfo.GetValue(null)))
             .Somes()
             .Cast<int>()
             .Distinct()

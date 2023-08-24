@@ -37,7 +37,7 @@ If registering a class that inherits from `IEndpoints` helper dependency injecti
 - `AddScopedEndpoints<T>(this IServiceCollection services) where T : IEndpoint`
 - `AddSingletonEndpoints<T>(this IServiceCollection services) where T : IEndpoint`
 
-Structs that inherit from `IEndpoints` may also be registered, though they require a but more setup.
+Structs that inherit from `IEndpoints` may also be registered, though they require a bit more setup.
 
 - `RegisterEndpoints<T>(this IServiceCollection services, Func<ServiceProvider, object> func);`
 

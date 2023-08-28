@@ -2,12 +2,20 @@ namespace Genesis.DependencyInjection;
 
 using System.Linq.Expressions;
 using System.Reflection;
-using Genesis.Validation;
+using Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 public static class WebApplicationExtensions {
 
+    private delegate RouteHandlerBuilder HttpFunctor(IEndpointRouteBuilder builder, string routeTemplate, Delegate action);
+
+    private const string _DELETE = "DELETE";
+    private const string _GET = "GET";
+    private const string _PATCH = "PATCH";
+    private const string _POST = "POST";
+    private const string _PUT = "PUT";
+    
     /// <summary>
     /// Maps endpoints from functions in a class using <see ref="HttpMethodAttribute" /> and <see ref="RouteAttribute" /> attributes.
     /// <code>
@@ -43,23 +51,23 @@ public static class WebApplicationExtensions {
     /// </code>
     /// </summary>
     public static WebApplication MapStaticEndpoints(this WebApplication app, Type type) =>
-        type.IsAbstract && type.IsSealed
+        type is { IsAbstract: true , IsSealed: true }
             ? RegisterAttributes(app, null, type)
             : throw new ArgumentException($"{type.Name} must be a static class!", nameof(type));
 
-    static WebApplication RegisterAttributes(WebApplication app, object? instance, Type type) {
-        Delegate CreateDelegate(object? instance, MethodInfo mi) {
+    private static WebApplication RegisterAttributes(WebApplication app, object? instance, Type type) {
+        Delegate CreateDelegate(object? objInstance, MethodInfo mi) {
             var parameters = 
                 mi.GetParameters()
                 .Select(p => Expression.Parameter(p.ParameterType, p.Name))
                 .ToArray();
 
-            var exprInstance = instance is null ? null : Expression.Constant(instance);
+            var exprInstance = objInstance is null ? null : Expression.Constant(objInstance);
 
-            var call = Expression.Call(exprInstance, mi, parameters);
+            var call = Expression.Call(exprInstance, mi, parameters.Cast<Expression>());
             
             var lambda = Expression.Lambda(call, parameters).Compile();
-            return mi.CreateDelegate(lambda.GetType(), instance);
+            return mi.CreateDelegate(lambda.GetType(), objInstance);
         }
 
         string CreateRouteTemplate(string template1, string template2) {
@@ -67,7 +75,7 @@ public static class WebApplicationExtensions {
                 template switch {
                     ['/',..] => template[1..],
                     _ => template };
-            return $@"{ParseRoute(template1)}/{ParseRoute(template2)}";
+            return $"{ParseRoute(template1)}/{ParseRoute(template2)}";
         }
 
         IEnumerable<T> GetCustomAttributes<T>(MethodInfo mi) where T : Attribute =>
@@ -87,30 +95,35 @@ public static class WebApplicationExtensions {
                     filters: GetCustomAttributes<ValidateParamAttribute>(mi)
                         .Concat(
                             mi.GetParameters()
-                            .Where(p => p.GetCustomAttribute<ValidateAttribute>() is not null)
-                            .Select(p => new ValidateParamAttribute(p.ParameterType))
-                        ).DistinctBy(a => a.Type),
-                    routeTemplate: CreateRouteTemplate(routeRoot, a!.Template!)
+                            .Where(parameterInfo => parameterInfo.GetCustomAttribute<ValidateAttribute>() is not null)
+                            .Select(parameterInfo => new ValidateParamAttribute(parameterInfo.ParameterType))
+                        ).DistinctBy(validateParamAttribute => validateParamAttribute.Type),
+                    routeTemplate: CreateRouteTemplate(routeRoot, a.Template!)
                 ))
-            ).SelectMany(r => r.httpMethod.HttpMethods.Select(x => (r.action, r.routeTemplate, verb: x, r.filters)))
-            .Where(r => r.verb is "DELETE" or "GET" or "PATCH" or "POST" or "PUT");
+            ).SelectMany(result => result.httpMethod.HttpMethods.Select(httpMethod => (result.action, result.routeTemplate, verb: httpMethod, result.filters)))
+            .Where(result => result.verb is _DELETE or _GET or _PATCH or _POST or _PUT);
 
+        HttpFunctor mapDelete = EndpointRouteBuilderExtensions.MapDelete;
+        HttpFunctor mapGet = EndpointRouteBuilderExtensions.MapGet;
+        HttpFunctor mapPatch = EndpointRouteBuilderExtensions.MapPatch;
+        HttpFunctor mapPost = EndpointRouteBuilderExtensions.MapPost;
+        HttpFunctor mapPut = EndpointRouteBuilderExtensions.MapPut;
+        
         foreach(var (action, routeTemplate, verb, filters) in results) {
             var routeBuilder = (verb switch {
-                "DELETE" => (Func<IEndpointRouteBuilder, string, Delegate, RouteHandlerBuilder>)
-                            EndpointRouteBuilderExtensions.MapDelete,
-                "GET"    => EndpointRouteBuilderExtensions.MapGet,
-                "PATCH"  => EndpointRouteBuilderExtensions.MapPatch,
-                "POST"   => EndpointRouteBuilderExtensions.MapPost,
-                "PUT"    => EndpointRouteBuilderExtensions.MapPut,
-                _ => (_, _, _) => new(Enumerable.Empty<IEndpointConventionBuilder>())
+                _DELETE => mapDelete,
+                _GET    => mapGet,
+                _PATCH  => mapPatch,
+                _POST   => mapPost,
+                _PUT    => mapPut,
+                _ => (_, _, _) => new RouteHandlerBuilder(Enumerable.Empty<IEndpointConventionBuilder>())
             })(app, routeTemplate, action);
             
             foreach(var filter in filters)
                 typeof(RouteHandlerBuilderExtensions)
-                    ?.GetMethod("AddValidationFilter", 1, new[] { typeof(RouteHandlerBuilder) })
+                    .GetMethod("AddValidationFilter", 1, new[] { typeof(RouteHandlerBuilder) })
                     ?.MakeGenericMethod(filter.Type)
-                    ?.Invoke(null, new object[] { routeBuilder });
+                    .Invoke(null, new object[] { routeBuilder });
         }
         return app;
     }

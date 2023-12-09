@@ -1,7 +1,15 @@
+using Point = (int x, int y);
+using FibSequence = int[];
+
 namespace Genesis.Validation;
 
+static class Foo {
+    static Point Point => (1, 2);
+
+}
+
 /// <summary>
-/// Rule set which containes an enumerable of rules to validate againsts
+/// Rule set which contains an enumerable of rules to validate against
 /// </summary>
 public record struct RuleSet<T>(IEnumerable<IRule<T>> Rules) : IRuleSet<T>;
 

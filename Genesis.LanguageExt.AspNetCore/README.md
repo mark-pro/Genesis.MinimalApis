@@ -1,3 +1,7 @@
+# ❗❗❗ DEPRECATED
+
+This package has been replaced by [Oneiro.AspNetCore.LanguageExt](https://github.com/oneirosoft/aspnetcore-language-ext)
+
 # Genesis Minimal Endpoints: LanguageExt
 
 [![.NET](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/dotnet.yml/badge.svg)](https://github.com/mark-pro/Genesis.MinimalApis/actions/workflows/dotnet.yml)
